@@ -1,0 +1,46 @@
+version: "3.1"
+
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    networks:
+      - custom_network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+
+  python_app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile/python_app.Dockerfile
+    depends_on:
+      - ollama
+    networks:
+      - custom_network
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_API_BASE_URL=http://ollama:11434
+    restart: always
+    tty: true
+
+networks:
+  custom_network:
+    driver: bridge
+
+volumes:
+  ollama_data:
