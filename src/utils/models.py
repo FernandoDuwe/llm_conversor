@@ -65,8 +65,8 @@ def Execute(prForm, prArtifact, prDocumentation):
 
     # Executando a cadeia
     vrResult = vrChain.invoke({
-        "form": "Teste",
-        "artifact": "Teste"
+        "form": prForm,
+        "artifact": prArtifact
     }).strip()
 
     return vrResult
