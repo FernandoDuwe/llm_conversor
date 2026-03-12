@@ -7,17 +7,13 @@ def main():
     os.makedirs(consts.PATH_INPUT, exist_ok=True)
     os.makedirs(consts.PATH_OUTPUT, exist_ok=True)
 
-    # Lendo o conteúdo dos arquivos de entrada
-    vrPDFData = extractor.extract_pdf(consts.PATH_INPUT + "/analise_tecnica.pdf")
-    vrTextData = extractor.extract_text(consts.PATH_INPUT + "/exemplo_codigo.py")
+    vrDocumentation = extractor.extract_text(consts.PATH_INPUT + "/de_para.md")
+    vrForm = extractor.extract_text(consts.PATH_INPUT + "/Form.aspx")
+    vrArtifact = extractor.extract_text(consts.PATH_INPUT + "/Artefato.xml")
 
-    # Processando
-    vrPrompt = ""
+    models.ExecuteToFile(vrForm, vrArtifact, vrDocumentation, consts.PATH_OUTPUT + "/resultado.xml")
 
-    with open(consts.FILE_CONFIG_PROMPT_USER, 'r', encoding='utf-8') as vrFile:
-        vrPrompt = vrFile.read()
 
-    models.ExecuteToFile(vrPrompt, consts.PATH_OUTPUT + "/doc_user.md",  vrTextData, vrPDFData);
 
 if __name__ == "__main__":
     main()

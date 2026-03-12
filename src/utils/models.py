@@ -1,5 +1,6 @@
 import os
 import utils.consts as consts
+from operator import itemgetter
 from langchain_ollama import ChatOllama, OllamaEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -23,7 +24,7 @@ def CreateVectorStore(prText):
     vrVectorStore = FAISS.from_texts(vrChunks, vrEmbeddings)
     return vrVectorStore
 
-def Execute(prQuery, prCode, prDocumentation):
+def Execute(prForm, prArtifact, prDocumentation):
     # Lendo o prompt do arquivo
     with open(consts.FILE_CONFIG_PROMPT, 'r', encoding='utf-8') as vrFile:
         vrPrompt = vrFile.read()
@@ -52,24 +53,26 @@ def Execute(prQuery, prCode, prDocumentation):
     # 2. Passa a 'query' adiante
     # 3. Formata o prompt, envia ao LLM e extrai o texto
     vrChain = (
-        {"context": vrRetriever, "query": RunnablePassthrough()}
+        {
+            "context": itemgetter("form") | vrRetriever,
+            "form": itemgetter("form"),
+            "artifact": itemgetter("artifact")
+        }
         | vrPromptObj
         | vrLLM
         | StrOutputParser()
     )
 
-    # Montando a query com o código
-    vrQuery = f"{prQuery}:\n{prCode}"
-
     # Executando a cadeia
-    vrResult = vrChain.invoke(vrQuery).strip()
+    vrResult = vrChain.invoke({
+        "form": "Teste",
+        "artifact": "Teste"
+    }).strip()
 
     return vrResult
 
-def ExecuteToFile(prQuery, prFileName, prCode, prDocumentation):
-    print(f"Pergunta: {prQuery}")
-    
-    vrResult = Execute(prQuery, prCode, prDocumentation)
+def ExecuteToFile(prForm, prArtifact, prDocumentation, prFileName):  
+    vrResult = Execute(prForm, prArtifact, prDocumentation)
 
     if os.path.exists(prFileName):
         os.remove(prFileName)

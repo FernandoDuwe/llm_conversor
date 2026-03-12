@@ -1,1 +1,0 @@
-Baseado no contexto dado e no código, crie uma documentação em linguagem simples, focada no usuário final

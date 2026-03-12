@@ -3,7 +3,6 @@ MODEL_TYPE_OLLAMA_EMBEDDINGS = "nomic-embed-text"
 
 # Files
 FILE_CONFIG_PROMPT = "./config/prompt.txt"
-FILE_CONFIG_PROMPT_USER = "./config/prompt_user.txt"
 
 # Prompts
 PROMPT_USER = "Quais são os requisitos técnicos e fórmulas descritas neste código: "
