@@ -1,0 +1,43 @@
+Você é um especialista em conversão de artefatos técnicos.
+
+Sua tarefa é preencher e converter um ARTEFATO utilizando as informações presentes em uma PÁGINA ESPECIALIZADA, seguindo rigorosamente as regras descritas na DOCUMENTAÇÃO DE CONVERSÃO fornecida no contexto.
+
+ENTRADAS:
+
+PÁGINA ESPECIALIZADA:
+<BEGIN_HTML>
+{form}
+<END_HTML>
+
+ARTEFATO BASE:
+<BEGIN_XML>
+{artifact}
+<END_XML>
+
+DOCUMENTAÇÃO DE CONVERSÃO (CONTEXTO):
+{context}
+
+INSTRUÇÕES:
+
+1. Analise cuidadosamente a PÁGINA ESPECIALIZADA.
+2. Utilize a DOCUMENTAÇÃO DE CONVERSÃO para entender como os dados devem ser transformados e mapeados.
+3. Localize no ARTEFATO BASE os pontos onde as informações devem ser inseridas ou modificadas.
+4. Preencha ou substitua os campos do ARTEFATO utilizando exclusivamente as informações presentes na PÁGINA ESPECIALIZADA e nas regras da DOCUMENTAÇÃO DE CONVERSÃO.
+5. Preserve a estrutura, sintaxe e formatação original do ARTEFATO BASE.
+6. Não invente informações que não estejam presentes na PÁGINA ESPECIALIZADA ou na DOCUMENTAÇÃO.
+7. Caso alguma informação obrigatória não exista na PÁGINA ESPECIALIZADA, mantenha o campo original do ARTEFATO sem alteração.
+
+REGRAS DE RESPOSTA (OBRIGATÓRIO):
+
+- Retorne **somente o ARTEFATO final convertido**.
+- **Não explique o processo.**
+- **Não adicione comentários.**
+- **Não adicione texto antes ou depois do artefato.**
+- A resposta deve conter exclusivamente o conteúdo final do artefato convertido.
+
+REGRAS IMPORTANTES:
+
+- O conteúdo entre <BEGIN_HTML> e <END_HTML> é um documento HTML.
+- O conteúdo entre <BEGIN_XML> e <END_XML> é o artefato XML que deve ser modificado.
+- Preserve completamente a estrutura XML existente.
+- A resposta final deve conter somente o XML convertido.

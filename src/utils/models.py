@@ -1,5 +1,6 @@
 import os
 import utils.consts as consts
+import utils.tools as tools
 from operator import itemgetter
 from langchain_ollama import ChatOllama, OllamaEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -24,7 +25,7 @@ def CreateVectorStore(prText):
     vrVectorStore = FAISS.from_texts(vrChunks, vrEmbeddings)
     return vrVectorStore
 
-def Execute(prForm, prArtifact, prDocumentation):
+def ExecuteFormArtifact(prForm, prArtifact, prDocumentation):
     # Lendo o prompt do arquivo
     with open(consts.FILE_CONFIG_PROMPT, 'r', encoding='utf-8') as vrFile:
         vrPrompt = vrFile.read()
@@ -37,7 +38,7 @@ def Execute(prForm, prArtifact, prDocumentation):
         top_k=consts.TOP_K, 
         base_url=consts.PATH_OLLAMA #  
         # num_predict=consts.MAX_NEW_TOKENS_LONG
-    )
+    ).bind_tools([tools.WriteFile])
 
     # Criando o prompt template
     # Importante: O LCEL preencherá 'context' e 'query' automaticamente
@@ -71,11 +72,40 @@ def Execute(prForm, prArtifact, prDocumentation):
 
     return vrResult
 
-def ExecuteToFile(prForm, prArtifact, prDocumentation, prFileName):  
-    vrResult = Execute(prForm, prArtifact, prDocumentation)
+def ExecuteQuery(prQuery):
+    # Lendo o prompt do arquivo
+    with open(consts.FILE_CONFIG_PROMPT, 'r', encoding='utf-8') as vrFile:
+        vrPrompt = vrFile.read()
 
-    if os.path.exists(prFileName):
-        os.remove(prFileName)
+    # Configurando o ChatOllama
+    vrLLM = ChatOllama(
+        model=consts.MODEL_TYPE_OLLAMA, 
+        temperature=consts.TEMPERATURE_LOW_CREATIVITY, 
+        top_p=consts.TOP_P, 
+        top_k=consts.TOP_K, 
+        base_url=consts.PATH_OLLAMA #  
+        # num_predict=consts.MAX_NEW_TOKENS_LONG
+    )
 
-    with open(prFileName, "w", encoding="utf-8") as vrFile:
-        vrFile.write(vrResult)
+    # Criando o prompt template
+    # Importante: O LCEL preencherá 'context' e 'query' automaticamente
+    vrPromptObj = PromptTemplate.from_template(vrPrompt)
+
+    # --- NOVA ARQUITETURA LCEL (Substitui o RetrievalQA) ---
+    # Esta cadeia faz o seguinte:
+    # 1. Recupera documentos para o 'context' usando a query
+    # 2. Passa a 'query' adiante
+    # 3. Formata o prompt, envia ao LLM e extrai o texto
+    vrChain = (
+        {
+            "query": RunnablePassthrough()
+        }
+        | vrPromptObj
+        | vrLLM
+        | StrOutputParser()
+    )
+
+    # Executando a cadeia
+    vrResult = vrChain.invoke(prQuery).strip()
+
+    return vrResult

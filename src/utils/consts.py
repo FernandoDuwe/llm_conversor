@@ -1,3 +1,5 @@
+import os
+
 MODEL_TYPE_OLLAMA = "qwen2.5-coder:0.5b"  # "llama3.2:3b" # "llama3.1:8b"
 MODEL_TYPE_OLLAMA_EMBEDDINGS = "nomic-embed-text"
 
@@ -10,7 +12,7 @@ PROMPT_USER = "Quais são os requisitos técnicos e fórmulas descritas neste c�
 # Path
 PATH_INPUT = "./input"
 PATH_OUTPUT = "./output"
-PATH_OLLAMA = "http://127.0.0.1:11434"
+PATH_OLLAMA = os.getenv("OLLAMA_API_BASE_URL") or os.getenv("OLLAMA_HOST") or "http://localhost:11434"
 
 # Temperature
 TEMPERATURE_LOW_CREATIVITY = 0.1 # temperatura baixa = baixa criatividade do modelo
