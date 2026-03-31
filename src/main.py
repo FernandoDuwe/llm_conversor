@@ -1,6 +1,6 @@
 import os
 import utils.consts as consts
-import utils.extractor as extractor
+import utils.utils as utils
 import utils.models as models
 
 def main():
@@ -9,7 +9,7 @@ def main():
 
     vrData = models.ExecuteQuery("Explique como funciona a sequência de fibonacci. Salve a resposta em um arquivo de texto.")
 
-    print(vrData)
+    utils.SaveMessageToFile(vrData, "response.md")
 
 if __name__ == "__main__":
     main()

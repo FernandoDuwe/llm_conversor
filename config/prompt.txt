@@ -5,3 +5,6 @@ Caso não saiba a resposta, diga explicitamente que não sabe.
 
 Pergunta:
 {query}
+
+Regras:
+- A resposta DEVE estar no formato markdown
