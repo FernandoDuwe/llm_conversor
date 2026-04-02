@@ -1,3 +1,5 @@
+version: "3.1"
+
 services:
   ollama:
     image: ollama/ollama
@@ -6,11 +8,17 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
-    environment:
-      - OLLAMA_VULKAN=1
     restart: unless-stopped
     networks:
       - custom_network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
 
   python_app:
     build:
@@ -27,7 +35,6 @@ services:
     environment:
       - OLLAMA_HOST=http://ollama:11434
       - OLLAMA_API_BASE_URL=http://ollama:11434
-      - OPENVINO_DEVICE=AUTO:GPU,NPU,CPU
     restart: always
     tty: true
 

@@ -1,0 +1,16 @@
+services:
+  ollama:
+    devices:
+      - ${INTEL_GPU_DEVICE:-/dev/dri}:${INTEL_GPU_DEVICE:-/dev/dri}
+      - ${INTEL_NPU_DEVICE:-/dev/accel}:${INTEL_NPU_DEVICE:-/dev/accel}
+    group_add:
+      - render
+      - video
+
+  python_app:
+    devices:
+      - ${INTEL_GPU_DEVICE:-/dev/dri}:${INTEL_GPU_DEVICE:-/dev/dri}
+      - ${INTEL_NPU_DEVICE:-/dev/accel}:${INTEL_NPU_DEVICE:-/dev/accel}
+    group_add:
+      - render
+      - video
