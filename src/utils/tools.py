@@ -1,7 +1,7 @@
 import os
 import utils.consts as consts
 from langchain_core.tools import tool
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, ToolMessage
 
 def NormalizeMessageContent(prContent):
     if isinstance(prContent, str):
@@ -23,6 +23,8 @@ def InvokeWithWriteFile(prLLM, prPromptText):
     for _ in range(5):
         vrResponse = prLLM.invoke(vrMessages)
         vrMessages.append(vrResponse)
+
+        print(vrResponse)
 
         vrToolCalls = getattr(vrResponse, "tool_calls", []) or []
 

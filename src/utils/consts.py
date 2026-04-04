@@ -1,6 +1,6 @@
 import os
 
-MODEL_TYPE_OLLAMA = "qwen2.5-coder:0.5b"  # "llama3.2:3b" # "llama3.1:8b"
+MODEL_TYPE_OLLAMA = "llama3.2:3b" # "qwen2.5-coder:0.5b"  # "llama3.2:3b" # "llama3.1:8b"
 MODEL_TYPE_OLLAMA_EMBEDDINGS = "nomic-embed-text"
 
 # Files
