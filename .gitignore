@@ -209,3 +209,4 @@ __marimo__/
 # LLM
 input/
 output/
+docker-compose.yml
