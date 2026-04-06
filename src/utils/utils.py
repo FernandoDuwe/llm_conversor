@@ -26,3 +26,10 @@ def SaveMessageToFile(prMessage, prFileName):
 
     with open(vrFilePath, "w", encoding="utf-8") as vrFile:
         vrFile.write(prMessage)
+
+def CleanOutputDirectory():
+    if os.path.exists(consts.PATH_OUTPUT):
+        for filename in os.listdir(consts.PATH_OUTPUT):
+            file_path = os.path.join(consts.PATH_OUTPUT, filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)

@@ -24,11 +24,17 @@ def InvokeWithWriteFile(prLLM, prPromptText):
         vrResponse = prLLM.invoke(vrMessages)
         vrMessages.append(vrResponse)
 
-        print(vrResponse)
+        if (consts.MODE_DEBUG):
+            print(type(vrResponse))
+            print(type(vrMessages))
+            # print(vrResponse)
 
         vrToolCalls = getattr(vrResponse, "tool_calls", []) or []
 
         if not vrToolCalls:
+            if (consts.MODE_DEBUG):
+                print("tools_calls vazio, retornando resposta final.")
+
             return NormalizeMessageContent(vrResponse.content).strip()
 
         for vrToolCall in vrToolCalls:
@@ -36,11 +42,14 @@ def InvokeWithWriteFile(prLLM, prPromptText):
             vrToolArgs = vrToolCall.get("args", {})
             vrToolCallId = vrToolCall.get("id")
 
+            if (consts.MODE_DEBUG):
+                print(f"Tool chamada: {vrToolName} com args: {vrToolArgs}")
+
             if vrToolName != "WriteFile":
                 vrToolResult = f"Tool não suportada: {vrToolName}"
             else:
                 try:
-                    vrToolResult = tools.WriteFile.invoke(vrToolArgs)
+                    vrToolResult = WriteFile.invoke(vrToolArgs)
                 except Exception as vrError:
                     vrToolResult = f"Erro ao executar WriteFile: {vrError}"
 
@@ -61,10 +70,14 @@ def WriteFile(prContent: str, prFileName: str) -> str:
         prFileName: Nome do arquivo (ex: 'teste.txt').
     """
 
-    vrFilePath = os.path.join(consts.PATH_OUTPUT, prFileName)
+    vrFilePath = os.path.join(consts.PATH_OUTPUT + "/", prFileName)
+
+    if (consts.MODE_DEBUG):
+        print(f"WriteFile chamado com prContent: {prContent} e prFileName: {prFileName}. Arquivo: {vrFilePath}")
+
     os.makedirs(consts.PATH_OUTPUT, exist_ok=True)
 
-    with open(vrFilePath, "w", encoding="utf-8") as vrFile:
+    with open(vrFilePath, "a", encoding="utf-8") as vrFile:
         vrFile.write(prContent)
 
     return f"Arquivo gravado com sucesso: {vrFilePath}"
