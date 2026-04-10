@@ -11,9 +11,10 @@ def main():
 
     utils.CleanOutputDirectory()
 
-    vrData = models.ExecuteQueryWithTools("""Explique de forma clara o que é a sequência de Fibonacci, com exemplos simples.
-                                             Depois disso, gere um código em Python que implemente a sequência de Fibonacci (pode ser iterativo ou recursivo, de preferência com comentários explicando).
-                                             Por fim, salve esse código em um arquivo chamado "fibonacci.py".""")
+    with open(consts.PATH_INPUT + "/InitializeRow.py", 'r', encoding='utf-8') as vrFile:
+        vrFileContent = vrFile.read()
+
+    vrData = models.ExecuteQueryWithToolsWithRAG(vrFileContent, prPrompt=consts.FILE_CONFIG_PROMPT_DECORATOR)
 
     utils.SaveMessageToFile(vrData, "response.md")
 

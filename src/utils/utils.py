@@ -20,6 +20,28 @@ def CreateVectorStore(prText):
     vrVectorStore = FAISS.from_texts(vrChunks, vrEmbeddings)
     return vrVectorStore
 
+
+def LoadVectorStore():
+    if not os.path.isdir(consts.DATABASE_PATH):
+        return None
+
+    vrEmbeddings = OllamaEmbeddings(
+        model=consts.MODEL_TYPE_OLLAMA_EMBEDDINGS,
+        base_url=consts.PATH_OLLAMA
+    )
+
+    try:
+        return FAISS.load_local(
+            consts.DATABASE_PATH,
+            vrEmbeddings,
+            allow_dangerous_deserialization=True
+        )
+    except Exception as ex:
+        if consts.MODE_DEBUG:
+            print(f"DEBUG: Falha ao carregar VectorStore de {consts.DATABASE_PATH}: {ex}")
+        return None
+
+
 def SaveMessageToFile(prMessage, prFileName):
     vrFilePath = os.path.join(consts.PATH_OUTPUT, prFileName)
     os.makedirs(consts.PATH_OUTPUT, exist_ok=True)
